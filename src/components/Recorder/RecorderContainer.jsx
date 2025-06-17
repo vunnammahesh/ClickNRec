@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import PreviewArea from "./PreviewArea";
 import Controls from "./Controls";
 
-const RecorderContainer = () => {
+const RecorderContainer = ({ setRecordings, recordings }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [mode, setMode] = useState("audio"); // 'audio' | 'video'
+  const [mode, setMode] = useState("audio");
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
@@ -35,7 +35,15 @@ const RecorderContainer = () => {
         const url = URL.createObjectURL(blob);
         setAudioURL(url);
 
-        // Stop all tracks
+        setRecordings([
+          ...recordings,
+          {
+            url,
+            mode,
+            createdAt: new Date().toLocaleString(),
+          },
+        ]);
+
         stream.getTracks().forEach((track) => track.stop());
       };
 
@@ -58,26 +66,6 @@ const RecorderContainer = () => {
     clearInterval(timerRef.current);
   };
 
-  // ✅ Derive this function based on current state
-  const handleRecord = () => {
-    if (isRecording) {
-      handleStop();
-    } else {
-      handleStart();
-    }
-  };
-
-  const handleDownload = () => {
-    if (audioURL) {
-      const a = document.createElement("a");
-      a.href = audioURL;
-      a.download = mode === "audio" ? "recording.webm" : "recording_video.webm";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  };
-
   useEffect(() => {
     return () => {
       clearInterval(timerRef.current);
@@ -91,9 +79,11 @@ const RecorderContainer = () => {
     <main className="flex-grow p-4 flex flex-col items-center justify-center text-center">
       <Controls
         isRecording={isRecording}
-        handleRecord={handleRecord}
+        handleStart={handleStart}
+        handleStop={handleStop}
         mode={mode}
         setMode={setMode}
+        recordingTime={recordingTime}
       />
 
       <PreviewArea
@@ -102,7 +92,6 @@ const RecorderContainer = () => {
         recordingTime={recordingTime}
         mode={mode}
         stream={streamRef.current}
-        handleDownload={handleDownload}
       />
     </main>
   );
