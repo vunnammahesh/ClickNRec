@@ -64,7 +64,7 @@ npm run dev
 
 ## 🎁 Bonus Features
 
-- Toggle button to switch between **Audio** and **Video** modes
+- Button to switch between **Audio** and **Video** modes
 - Recording **duration timer**
 - **In-memory recording list** (My Recordings button in the header — planned for future versions to persist via LocalStorage)
 - Graceful handling for **camera/microphone permission errors**
@@ -75,7 +75,7 @@ npm run dev
 
 - No persistent storage implemented yet (My Recordings is in-memory for now).
 - Limited to **webm** format for both audio and video to keep it consistent and compatible.
-- Tried both **toggle button** and **radio options** for mode switch — final implementation uses a toggle beside the Start Recording button for cleaner UX.
+- Tried both **button** and **radio options** for mode switch — final implementation uses a button beside the Start Recording button for cleaner UX.
 
 ---
 
